@@ -19,5 +19,6 @@ from django.urls import path
 from loans import views as views_loans
 urlpatterns = [
     path('', views_loans.LoanApplicationView.as_view()),
+    path('application_admin/', views_loans.application_admin),
     path('admin/', admin.site.urls),
 ]

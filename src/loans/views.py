@@ -1,8 +1,11 @@
 from django.views import View
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
+from .models import Loan
 from .forms import LoanForm, UserLoanForm
 from .api.API import get_autorization_api
+
 
 class LoanApplicationView(View):
     loan_form = LoanForm()
@@ -51,3 +54,18 @@ class LoanApplicationView(View):
                 'status': '0',
             }
         return render(request, self.template_name, context)
+
+
+@login_required
+@permission_required('loans.can_change')
+def application_admin(request):
+    template = 'loans/table.html'
+    loan_list = Loan.objects.all() 
+    context = {
+        'loan_list': loan_list,
+    }
+    return render(
+        request,
+        template,
+        context,
+    )
