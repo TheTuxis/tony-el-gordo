@@ -2,7 +2,7 @@ from django.views import View
 from django.shortcuts import render
 
 from .forms import LoanForm, UserLoanForm
-
+from .api.API import get_autorization_api
 
 class LoanApplicationView(View):
     loan_form = LoanForm()
@@ -21,14 +21,33 @@ class LoanApplicationView(View):
         loan_form = LoanForm(data=request.POST)
         user_loan_form = UserLoanForm(data=request.POST)
         context = {
-            'loan_form': loan_form,
-            'user_loan_form': user_loan_form,
-            'status': '0',
-        } 
+                'loan_form': loan_form,
+                'user_loan_form': user_loan_form,
+                'status': '0',
+            }
+
         if user_loan_form.is_valid() and loan_form.is_valid():
             user_loan = user_loan_form.save()
             loan_form = loan_form.save(commit=False)
             loan_form.user_loan = user_loan
+            val_res = get_autorization_api(
+                user_loan.legal_number,
+                user_loan.gender,
+                user_loan.mail
+            )
+            print(val_res)
+            if val_res['approved'] and val_res['error']:
+                validation = 'A'
+                context['status'] = '1'
+            else:
+                validation = 'R'
+                context['status'] = '2'
+            loan_form.status = validation
             loan_form.save()
-            context['status'] = '1'
+        else:
+            context = {
+                'loan_form': loan_form,
+                'user_loan_form': user_loan_form,
+                'status': '0',
+            }
         return render(request, self.template_name, context)
