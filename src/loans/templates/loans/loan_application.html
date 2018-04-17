@@ -18,6 +18,7 @@
                         {% csrf_token %}
                         {{ user_loan_form }}
                         <label for="id_amount">{{ loan_form.amount.label }}</label>
+                        {{ loan_form.amount.errors }}
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">$</div>

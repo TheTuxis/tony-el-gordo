@@ -3,4 +3,9 @@
     <h4 class="alert-heading">Aprobado</h4>
     <p>El prestamos que se detalla a continuacion se encuentra aprobado.</p>
 </div>
+{% elif status == '2' %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Rechazado</h4>
+    <p>El prestamos que se detalla a continuacion se encuentra rechazado.</p>
+</div>
 {% endif %}
